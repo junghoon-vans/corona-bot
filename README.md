@@ -17,3 +17,15 @@ Corona Bot is a simple facebook messenger bot to update users about the virus sp
     git clone https://github.com/oneandhalf/corona-bot.git
     cd corona-bot/
     ```
+
+
+## 🧐 What's inside?
+
+A quick look at the top-level files and directories you'll see in a Corona Bot project.
+
+    .
+    ├── assets
+    ├── webhook
+    ├── .gitignore
+    ├── LICENSE
+    └── README.md
