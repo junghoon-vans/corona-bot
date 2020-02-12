@@ -1,4 +1,5 @@
 import json, os
+import random
 import requests
 
 CHATBOT_RESPONSE = {
@@ -25,20 +26,18 @@ def lambda_handler(event, context):
             for message in entry['messaging']:
                 if 'message' in message:
                     try:
-                        post_facebook_message(message['sender']['id'], message['message']['text'])
+                        send_facebook_message(message['sender']['id'], message['message']['text'])
                     except:
                         print("따봉")
-        return
+        return {'statusCode': '200', 'body': 'Success' , 'headers': {'Content-Type': 'application/json'}}
         
-def post_facebook_message(fbid, recevied_message):
+def send_facebook_message(fbid, recevied_message):
     
-    question_text = ''
     tokens = list(CHATBOT_RESPONSE.keys())
     for token in tokens:
         if recevied_message.find(token) != -1:
-            question_ans = random.choice(CHATBOT_RESPONSE[token])
-            question_text += question_ans + "\n\n"
+            msg = random.choice(CHATBOT_RESPONSE[token])
 
     endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + os.environ['PAGE_ACCESS_TOKEN']
-    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":question_text}})
+    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": msg}})
     requests.post(endpoint, headers={"Content-Type": "application/json"},data=response_msg)
