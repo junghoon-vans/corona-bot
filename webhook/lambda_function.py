@@ -1,9 +1,9 @@
-import json, os
+import json, os, requests
 from pprint import pprint
 
-questions = {
-  '코로나': ["""바이러스"""]
-}
+CHATBOT_RESPONSE = {
+    '코로나': ["""바이러스"""],
+    }
 
 def lambda_handler(event, context):
     # TODO implement
@@ -20,17 +20,25 @@ def lambda_handler(event, context):
             return {'statusCode': '403', 'body': 'Error, invalid token', 'headers': {'Content-Type': 'application/json'}}
 
     elif event["httpMethod"] == "POST":
-        # Converts the text payload into a python dictionary
         incoming_message = json.loads(event['body'])
-        # Facebook recommends going through every entry since they might send
-        # multiple messages in a single call during high load
         for entry in incoming_message['entry']:
             for message in entry['messaging']:
-                # Check to make sure the received call is a message call
-                # This might be delivery, optin, postback for other events
                 if 'message' in message:
-                    # Print the message to the terminal
-                    return {'statusCode': '200', 'data':json.dumps({"recipient":{"id":message['sender']['id']}, "message":{"text":message['message']['text']}}), 'headers': {'Content-Type': 'application/json'}}
-                    # Assuming the sender only sends text. Non-text messages like stickers, audio, pictures
-                    # are sent as attachments and must be handled accordingly.
-        return {'statusCode': '403', 'body': json.dumps('null')}
+                    try:
+                        post_facebook_message(message['sender']['id'], message['message']['text'])
+                    except:
+                        print("따봉")
+        return
+        
+def post_facebook_message(fbid, recevied_message):
+    
+    question_text = ''
+    tokens = list(questions.keys())
+    for token in tokens:
+        if recevied_message.find(token) != -1:
+            question_ans = random.choice(CHATBOT_RESPONSE[token])
+            question_text += question_ans + "\n\n"
+
+    endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + os.environ['PAGE_ACCESS_TOKEN']
+    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":question_text}})
+    requests.post(endpoint, headers={"Content-Type": "application/json"},data=response_msg)
