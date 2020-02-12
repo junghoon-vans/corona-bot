@@ -1,5 +1,5 @@
-import json, os, requests
-from pprint import pprint
+import json, os
+import requests
 
 CHATBOT_RESPONSE = {
     '코로나': ["""바이러스"""],
@@ -33,7 +33,7 @@ def lambda_handler(event, context):
 def post_facebook_message(fbid, recevied_message):
     
     question_text = ''
-    tokens = list(questions.keys())
+    tokens = list(CHATBOT_RESPONSE.keys())
     for token in tokens:
         if recevied_message.find(token) != -1:
             question_ans = random.choice(CHATBOT_RESPONSE[token])
