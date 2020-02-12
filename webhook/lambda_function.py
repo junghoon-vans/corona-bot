@@ -30,7 +30,7 @@ def lambda_handler(event, context):
                 # This might be delivery, optin, postback for other events
                 if 'message' in message:
                     # Print the message to the terminal
-                    return {'statusCode': '200', 'body':json.dumps({"recipient":{"id":message['sender']['id']}, "message":{"text":message['message']['text']}})}
+                    return {'statusCode': '200', 'data':json.dumps({"recipient":{"id":message['sender']['id']}, "message":{"text":message['message']['text']}}), 'headers': {'Content-Type': 'application/json'}}
                     # Assuming the sender only sends text. Non-text messages like stickers, audio, pictures
                     # are sent as attachments and must be handled accordingly.
         return {'statusCode': '403', 'body': json.dumps('null')}
