@@ -1,4 +1,5 @@
 import json, os
+from pprint import pprint
 
 def lambda_handler(event, context):
     # TODO implement
@@ -13,3 +14,19 @@ def lambda_handler(event, context):
             
         else:
             return {'statusCode': '403', 'body': 'Error, invalid token', 'headers': {'Content-Type': 'application/json'}}
+
+    elif event["httpMethod"] == "POST":
+         # Converts the text payload into a python dictionary
+        incoming_message = json.loads(event['body'])
+        # Facebook recommends going through every entry since they might send
+        # multiple messages in a single call during high load
+        for entry in incoming_message['entry']:
+            for message in entry['messaging']:
+                # Check to make sure the received call is a message call
+                # This might be delivery, optin, postback for other events
+                if 'message' in message:
+                    # Print the message to the terminal
+                    return {'statusCode': '200', 'body':json.dumps(message)}
+                    # Assuming the sender only sends text. Non-text messages like stickers, audio, pictures
+                    # are sent as attachments and must be handled accordingly.
+        return {'statusCode': '403', 'body': json.dumps('null')}
