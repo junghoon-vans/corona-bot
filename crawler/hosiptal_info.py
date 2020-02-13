@@ -2,10 +2,10 @@
 
 import requests
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 import json
 
 hosiptal = {}
+# 전체 선별진료소
 hosiptal_list = []
 # retry get raw without timeout exception
 def get_raw(url):
@@ -15,10 +15,7 @@ def get_raw(url):
         except:
             pass
 
-# f = open("hospitals.csv", "w")
-# f.write("id, city, region, selected, number\n")
-
-#검체채취가능리스트
+# 검체채취가능 진료소
 possible_hospital=[]
 
 raw_hospital = get_raw("http://www.mohw.go.kr/react/popup_200128.html")
@@ -28,7 +25,7 @@ html_hospital = BeautifulSoup(raw_hospital.content, 'html.parser', from_encoding
 hospitals = html_hospital.select("tbody.tb_center tr")
 
 # 546
-for h in tqdm(hospitals):
+for h in hospitals:
     id = h.select_one("th").text
     city = h.select_one("td:nth-of-type(1)").text
     region = h.select_one("td:nth-of-type(2)").text
@@ -41,7 +38,7 @@ for h in tqdm(hospitals):
     print(id,city,region,selected,number)
     hosiptal_list.append({"city":city, "region":region, "name":selected,"number":number})
 
-hospital = {"data":hosiptal_list}
+hospital = {"all_hospital":hosiptal_list, "sampling_hospital":possible_hospital}
 json_hospital = json.dumps(hospital, indent=4)
 print(json_hospital)
 print(type(json_hospital))

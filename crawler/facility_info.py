@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 import json
 
 # 격리시설 list
