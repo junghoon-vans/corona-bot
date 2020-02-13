@@ -22,13 +22,11 @@ def lambda_handler(event, context):
 
     elif event["httpMethod"] == "POST":
         incoming_message = json.loads(event['body'])
-        for entry in incoming_message['entry']:
-            for message in entry['messaging']:
-                if 'message' in message:
-                    try:
-                        send_facebook_message(message['sender']['id'], message['message']['text'])
-                    except:
-                        print("따봉")
+        message = incoming_message['entry'][0]['messaging'][0]
+        try:
+            send_facebook_message(message['sender']['id'], message['message']['text'])
+        except:
+            print("따봉")
         return {'statusCode': '200', 'body': 'Success' , 'headers': {'Content-Type': 'application/json'}}
         
 def send_facebook_message(fbid, recevied_message):
