@@ -25,7 +25,7 @@ A quick look at the top-level files and directories you'll see in a Corona Bot p
 
     .
     ├── assets
-    ├── webhook
+    ├── src
     ├── .gitignore
     ├── LICENSE
     └── README.md
