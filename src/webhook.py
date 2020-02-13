@@ -6,25 +6,28 @@ CHATBOT_RESPONSE = {
     '코로나': ["""바이러스"""],
     }
 
-def get(event, context):
+def lambda_handler(event, context):
     # TODO implement
     
-    hub_mode = event["queryStringParameters"]["hub.mode"]
-    hub_challenge = event["queryStringParameters"]["hub.challenge"]
-    hub_verify_token = event["queryStringParameters"]["hub.verify_token"]
-    
-    if hub_verify_token == os.environ['VERIFY_TOKEN']: # store VERIFY_TOKEN in aws_lambda
-        return {'statusCode': '200', 'body': hub_challenge, 'headers': {'Content-Type': 'application/json'}}
+    if event["httpMethod"] == "GET":
+        hub_mode = event["queryStringParameters"]["hub.mode"]
+        hub_challenge = event["queryStringParameters"]["hub.challenge"]
+        hub_verify_token = event["queryStringParameters"]["hub.verify_token"]
+        
+        if hub_verify_token == os.environ['VERIFY_TOKEN']: # store VERIFY_TOKEN in aws_lambda
+            return {'statusCode': '200', 'body': hub_challenge, 'headers': {'Content-Type': 'application/json'}}
             
-    else:
-        return {'statusCode': '403', 'body': 'Error, invalid token', 'headers': {'Content-Type': 'application/json'}}
+        else:
+            return {'statusCode': '403', 'body': 'Error, invalid token', 'headers': {'Content-Type': 'application/json'}}
 
-def post(event, context):
-    incoming_message = json.loads(event['body'])
-    message = incoming_message['entry'][0]['messaging'][0]
-    try:
-        send_facebook_message(message['sender']['id'], message['message']['text'])
-    return {'statusCode': '200', 'body': 'Success' , 'headers': {'Content-Type': 'application/json'}}
+    elif event["httpMethod"] == "POST":
+        incoming_message = json.loads(event['body'])
+        message = incoming_message['entry'][0]['messaging'][0]
+        try:
+            send_facebook_message(message['sender']['id'], message['message']['text'])
+        except:
+            print("따봉")
+        return {'statusCode': '200', 'body': 'Success' , 'headers': {'Content-Type': 'application/json'}}
         
 def send_facebook_message(fbid, recevied_message):
     
