@@ -19,7 +19,6 @@ Corona Bot is a simple facebook messenger bot to update users about the virus sp
 A quick look at the top-level files and directories you'll see in a Corona Bot project.
 
     .
-    ├── assets
     ├── src
     ├── .gitignore
     ├── LICENSE
