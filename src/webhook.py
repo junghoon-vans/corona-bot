@@ -1,10 +1,10 @@
 import json, os
-import random
 import requests
 
 CHATBOT_RESPONSE = {
     '코로나': ["""바이러스"""],
-    }
+    '바이러스': ["""코로나"""]
+}
 
 def lambda_handler(event, context):
     # TODO implement
@@ -18,7 +18,7 @@ def lambda_handler(event, context):
             return {'statusCode': '200', 'body': hub_challenge, 'headers': {'Content-Type': 'application/json'}}
             
         else:
-            return {'statusCode': '403', 'body': 'Error, invalid token', 'headers': {'Content-Type': 'application/json'}}
+            return {'statusCode': '401', 'body': 'Incorrect verify token', 'headers': {'Content-Type': 'application/json'}}
 
     elif event["httpMethod"] == "POST":
         incoming_message = json.loads(event['body'])
@@ -30,12 +30,16 @@ def lambda_handler(event, context):
         return {'statusCode': '200', 'body': 'Success' , 'headers': {'Content-Type': 'application/json'}}
         
 def send_facebook_message(fbid, recevied_message):
-    
+    msg = ''
     tokens = list(CHATBOT_RESPONSE.keys())
+
     for token in tokens:
         if recevied_message.find(token) != -1:
-            msg = random.choice(CHATBOT_RESPONSE[token])
+            msg += CHATBOT_RESPONSE[token]
 
+    if not msg:
+        msg = "안녕하세요, 코로나 알리미입니다!\n코로나, 바이러스\n중에서 원하는 키워드를 넣어서\n질문해주세요."
+        
     endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + os.environ['PAGE_ACCESS_TOKEN']
-    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": msg}})
-    requests.post(endpoint, headers={"Content-Type": "application/json"},data=response_msg)
+    response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg}})
+    requests.post(endpoint, headers={"Content-Type": "application/json"}, data=response_msg)
