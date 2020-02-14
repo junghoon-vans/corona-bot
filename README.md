@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://www.facebook.com/코로나-알리미-109742117267368/">
-    <img alt="corona bot" src="assets/images/corona.png" width="60" />
+    <img alt="corona bot" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/corona.png" width="60" />
   </a>
 </p>
 <h1 align="center">
@@ -9,14 +9,9 @@
 
 Corona Bot is a simple facebook messenger bot to update users about the virus spread progression periodically.
 
-## 🚀 Quick start
+## 🔍 Overview
 
-1.  **Clone a Project.**
-
-    ```shell
-    git clone https://github.com/oneandhalf/corona-bot.git
-    cd corona-bot/
-    ```
+<img alt="architecture" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/architecture.png">
 
 
 ## 🧐 What's inside?
