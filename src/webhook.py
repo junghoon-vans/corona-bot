@@ -31,15 +31,15 @@ def send_facebook_message(fbid, received_message):
 
     if '확진환자수' in received_message:
         summary = json.loads(summary_info.get_json())
-        msg = summary["confirmator_num"]
+        msg = "현재까지 집계된 확진환자수는 %s명 입니다." % summary["confirmator_num"]
     
     elif '퇴원조치수' in received_message:
         summary = json.loads(summary_info.get_json())
-        msg = summary["discharged_num"]
+        msg = "현재까지 집계된 퇴원조치수는 %s명 입니다." % summary["discharged_num"]
         
     elif '검사진행수' in received_message:
         summary = json.loads(summary_info.get_json())
-        msg = summary["check_num"]
+        msg = "현재까지 집계된 검사진행수는 %s명 입니다." % summary["check_num"]
     
     else:
         for key in CHATBOT_RESPONSE.keys():
