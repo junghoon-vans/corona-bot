@@ -6,6 +6,8 @@ from crawler import summary_info
 from crawler import hospital_info
 
 CHATBOT_RESPONSE = {
+    '확진환자수':'',
+    '퇴원조치수':'',
     '발단': """2019년 12월, 중국 우한에서 처음 발생했습니다. 감염원은 동물로 추정되고 있으며, 동물에게서 사람으로 전파된 것으로 추정됩니다.""",
     '증상': """감염되면 최대 2주간의 잠복기를 거친 후, 발열 / 기침 / 호흡곤란을 비롯한 폐렴 증상이 주로 나타납니다. 다만, 증상이 나타나지 않는 무증상 감염 사례도 존재합니다.""",
     '전염경로': """코로나19는 사람 간 전파가 확인된 바이러스입니다. 주된 감염경로는 비말감염으로, 감염자의 침방울이 호흡기나 눈/코/입의 점막으로 침투될 때 전염됩니다.""",
@@ -40,6 +42,12 @@ def lambda_handler(event, context):
 
 def send_facebook_message(fbid, received_message):
     msg = ''
+    quick_replies = list()
+
+    for key in CHATBOT_RESPONSE.keys():
+        quick_replies.append({"content_type": "text", "title": key, "payload": "DEVELOPER_DEFINED_PAYLOAD"})
+        if key in received_message:
+            msg = CHATBOT_RESPONSE[key] + "\n"
 
     if '확진환자수' in received_message:
         data = json.loads(summary_info.get_json())
@@ -50,50 +58,9 @@ def send_facebook_message(fbid, received_message):
         data = json.loads(summary_info.get_json())
         msg = "현재시각 기준, %s명이 코로나19 확진 후 퇴원조치(격리해제) 되었습니다." % data["discharged_num"]
 
-    else:
-        for key in CHATBOT_RESPONSE.keys():
-            if key in received_message:
-                msg += CHATBOT_RESPONSE[key] + "\n"
-
     if not msg:
         msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
 
     endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s' % os.environ['PAGE_ACCESS_TOKEN']
-    response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg, "quick_replies": [
-        {
-            "content_type": "text",
-            "title": "발단",
-            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_BEGIN"
-        },
-        {
-            "content_type": "text",
-            "title": "증상",
-            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_SYMPTOMS"
-        },
-        {
-            "content_type": "text",
-            "title": "전염경로",
-            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_INFECTION_ROUTE"
-        },
-        {
-            "content_type": "text",
-            "title": "예방법",
-            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_PREVENTION_ACT"
-        },
-        {
-            "content_type": "text",
-            "title": "치료",
-            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_CURE"
-        },
-        {
-            "content_type": "text",
-            "title": "확진환자수",
-            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DEFINITE_DIAGNOSIS"
-        },
-        {
-            "content_type": "text",
-            "title": "퇴원조치수",
-            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_LEAVE"
-        }
-    ]}})
+    response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg, "quick_replies": quick_replies}})
     requests.post(endpoint, headers={"Content-Type": "application/json"}, data=response_msg)
