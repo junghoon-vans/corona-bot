@@ -12,7 +12,7 @@ CHATBOT_RESPONSE = {
     '예방법': """1. 우선, 비누와 물로 손을 자주 씻습니다. 손 소독제 사용도 좋은 대안입니다.\n
     2. 씻지 않은 손으로 눈이나 코, 입을 만지지 않습니다.\n
     3. 기침이나 재채기를 할 때 티슈나 소매로 입/코를 가립니다.\n
-    4. 아플 때는 자가격리를 통해 다른 사람과의 접촉을 피합니다.\n""",
+    4. 아플 때는 자가격리를 통해 다른 사람과의 접촉을 피합니다.""",
     '치료': """코로나19 치료는 환자의 증상에 대응하는 치료로 이루어집니다. 기침/인후통/폐렴 등 주요 증상에 따라 항바이러스제나 항생제 투여가 해당됩니다.""",
 }
 
@@ -58,9 +58,8 @@ def send_facebook_message(fbid, received_message):
     if not msg:
         msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
 
-    endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + \
-        os.environ['PAGE_ACCESS_TOKEN']
-    response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg, quick_replies: [
+    endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s' % os.environ['PAGE_ACCESS_TOKEN']
+    response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg, "quick_replies": [
         {
             "content_type": "text",
             "title": "발단",
@@ -97,5 +96,4 @@ def send_facebook_message(fbid, received_message):
             "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_LEAVE"
         }
     ]}})
-    requests.post(endpoint, headers={
-                  "Content-Type": "application/json"}, data=response_msg)
+    requests.post(endpoint, headers={"Content-Type": "application/json"}, data=response_msg)
