@@ -62,39 +62,39 @@ def send_facebook_message(fbid, received_message):
         os.environ['PAGE_ACCESS_TOKEN']
     response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg, quick_replies: [
         {
-            content_type: "text",
-            title: "발단",
-            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_BEGIN"
+            "content_type": "text",
+            "title": "발단",
+            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_BEGIN"
         },
         {
-            content_type: "text",
-            title: "증상",
-            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_SYMPTOMS"
+            "content_type": "text",
+            "title": "증상",
+            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_SYMPTOMS"
         },
         {
-            content_type: "text",
-            title: "전염경로",
-            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_INFECTION_ROUTE"
+            "content_type": "text",
+            "title": "전염경로",
+            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_INFECTION_ROUTE"
         },
         {
-            content_type: "text",
-            title: "예방법",
-            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_PREVENTION_ACT"
+            "content_type": "text",
+            "title": "예방법",
+            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_PREVENTION_ACT"
         },
         {
-            content_type: "text",
-            title: "치료",
-            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_CURE"
+            "content_type": "text",
+            "title": "치료",
+            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_CURE"
         },
         {
-            content_type: "text",
-            title: "확진환자수",
-            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DEFINITE_DIAGNOSIS"
+            "content_type": "text",
+            "title": "확진환자수",
+            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DEFINITE_DIAGNOSIS"
         },
         {
-            content_type: "text",
-            title: "퇴원조치수",
-            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_LEAVE"
+            "content_type": "text",
+            "title": "퇴원조치수",
+            "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_LEAVE"
         }
     ]}})
     requests.post(endpoint, headers={
