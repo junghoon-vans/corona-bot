@@ -50,8 +50,44 @@ def send_facebook_message(fbid, received_message):
                 msg += CHATBOT_RESPONSE[key] + "\n"
 
     if not msg:
-        msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요.\n\n- 발단\n- 증상\n- 전염경로\n- 예방법\n- 치료\n- 확진환자수\n- 퇴원조치수"
+        msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
         
     endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + os.environ['PAGE_ACCESS_TOKEN']
-    response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg}})
+    response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg, quick_replies: [
+            {
+              content_type: "text",
+              title: "발단",
+              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_BEGIN"
+            },
+            {
+              content_type: "text",
+              title: "증상",
+              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_SYMPTOMS"
+            },
+            {
+              content_type: "text",
+              title: "전염경로",
+              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_INFECTION_ROUTE"
+            },
+            {
+              content_type: "text",
+              title: "예방법",
+              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_PREVENTION_ACT"
+            },
+            {
+              content_type: "text",
+              title: "치료",
+              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_CURE"
+            },
+            {
+              content_type: "text",
+              title: "확진환자수",
+              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DEFINITE_DIAGNOSIS"
+            },
+            {
+              content_type: "text",
+              title: "퇴원조치수",
+              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_LEAVE"
+            }
+          ]}})
     requests.post(endpoint, headers={"Content-Type": "application/json"}, data=response_msg)
