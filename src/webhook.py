@@ -1,4 +1,5 @@
-import json, os
+import json
+import os
 import requests
 
 from crawler import summary_info
@@ -15,14 +16,16 @@ CHATBOT_RESPONSE = {
     '치료': """코로나19 치료는 환자의 증상에 대응하는 치료로 이루어집니다. 기침/인후통/폐렴 등 주요 증상에 따라 항바이러스제나 항생제 투여가 해당됩니다.""",
 }
 
+
 def lambda_handler(event, context):
     # TODO implement
-    
+
     if event["httpMethod"] == "GET":
         hub_challenge = event["queryStringParameters"]["hub.challenge"]
         hub_verify_token = event["queryStringParameters"]["hub.verify_token"]
-        
-        if hub_verify_token == os.environ['VERIFY_TOKEN']: # store VERIFY_TOKEN in aws_lambda
+
+        # store VERIFY_TOKEN in aws_lambda
+        if hub_verify_token == os.environ['VERIFY_TOKEN']:
             return {'statusCode': '200', 'body': hub_challenge, 'headers': {'Content-Type': 'application/json'}}
         else:
             return {'statusCode': '401', 'body': 'Incorrect verify token', 'headers': {'Content-Type': 'application/json'}}
@@ -30,20 +33,23 @@ def lambda_handler(event, context):
     elif event["httpMethod"] == "POST":
         incoming_message = json.loads(event['body'])
         message = incoming_message['entry'][0]['messaging'][0]
-        send_facebook_message(message['sender']['id'], message['message']['text'])
-        return {'statusCode': '200', 'body': 'Success' , 'headers': {'Content-Type': 'application/json'}}
-        
+        send_facebook_message(
+            message['sender']['id'], message['message']['text'])
+        return {'statusCode': '200', 'body': 'Success', 'headers': {'Content-Type': 'application/json'}}
+
+
 def send_facebook_message(fbid, received_message):
     msg = ''
 
     if '확진환자수' in received_message:
         data = json.loads(summary_info.get_json())
-        msg = "현재시각 기준, 코로나19 확진환자는 %s명, 검사가 진행중인 유증상자는 %s명입니다." % (data["confirmator_num"], data["check_num"])
-    
+        msg = "현재시각 기준, 코로나19 확진환자는 %s명, 검사가 진행중인 유증상자는 %s명입니다." % (
+            data["confirmator_num"], data["check_num"])
+
     elif '퇴원조치수' in received_message:
         data = json.loads(summary_info.get_json())
         msg = "현재시각 기준, %s명이 코로나19 확진 후 퇴원조치(격리해제) 되었습니다." % data["discharged_num"]
-                
+
     else:
         for key in CHATBOT_RESPONSE.keys():
             if key in received_message:
@@ -51,43 +57,45 @@ def send_facebook_message(fbid, received_message):
 
     if not msg:
         msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
-        
-    endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + os.environ['PAGE_ACCESS_TOKEN']
+
+    endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + \
+        os.environ['PAGE_ACCESS_TOKEN']
     response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg, quick_replies: [
-            {
-              content_type: "text",
-              title: "발단",
-              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_BEGIN"
-            },
-            {
-              content_type: "text",
-              title: "증상",
-              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_SYMPTOMS"
-            },
-            {
-              content_type: "text",
-              title: "전염경로",
-              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_INFECTION_ROUTE"
-            },
-            {
-              content_type: "text",
-              title: "예방법",
-              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_PREVENTION_ACT"
-            },
-            {
-              content_type: "text",
-              title: "치료",
-              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_CURE"
-            },
-            {
-              content_type: "text",
-              title: "확진환자수",
-              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DEFINITE_DIAGNOSIS"
-            },
-            {
-              content_type: "text",
-              title: "퇴원조치수",
-              payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_LEAVE"
-            }
-          ]}})
-    requests.post(endpoint, headers={"Content-Type": "application/json"}, data=response_msg)
+        {
+            content_type: "text",
+            title: "발단",
+            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_BEGIN"
+        },
+        {
+            content_type: "text",
+            title: "증상",
+            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_SYMPTOMS"
+        },
+        {
+            content_type: "text",
+            title: "전염경로",
+            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_INFECTION_ROUTE"
+        },
+        {
+            content_type: "text",
+            title: "예방법",
+            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_PREVENTION_ACT"
+        },
+        {
+            content_type: "text",
+            title: "치료",
+            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_CURE"
+        },
+        {
+            content_type: "text",
+            title: "확진환자수",
+            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DEFINITE_DIAGNOSIS"
+        },
+        {
+            content_type: "text",
+            title: "퇴원조치수",
+            payload: "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_LEAVE"
+        }
+    ]}})
+    requests.post(endpoint, headers={
+                  "Content-Type": "application/json"}, data=response_msg)
