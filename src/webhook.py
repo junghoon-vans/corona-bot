@@ -68,8 +68,9 @@ def send_text_message(fbid, received_message):
 
         else:
             msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
-            
-        send_message_api(json.dumps({"recipient": {"id": fbid}, "message": {"text": msg}}))
+                
+        send_message_api(json.dumps({
+            "recipient": {"id": fbid}, "message": {"text": msg, "quick_replies": quick_replies}}))
 
 def send_media_message(fbid, media_url, media_type):
     send_message_api(json.dumps({
