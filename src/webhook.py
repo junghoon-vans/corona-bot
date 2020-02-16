@@ -44,14 +44,6 @@ def lambda_handler(event, context):
         except:
             return {'statusCode': '500', 'body': 'Internal server error', 'headers': {'Content-Type': 'application/json'}}
 
-
-def send_dots(fbid):
-    send_message_api(json.dumps({
-        "recipient": {"id": fbid},
-        "sender_action": "typing_on"
-    }))
-
-
 def send_text_message(fbid, received_message):
     msg = ''
     quick_replies = list()
@@ -60,23 +52,24 @@ def send_text_message(fbid, received_message):
         quick_replies.append(
             {"content_type": "text", "title": key, "payload": "DEVELOPER_DEFINED_PAYLOAD"})
         if key in received_message:
-            msg += CHATBOT_RESPONSE[key] + "\n"
-
-    if '확진환자수' in received_message:
-        data = json.loads(summary_info.get_json())
-        msg = "현재시각 기준, 코로나19 확진환자는 %s명, 검사가 진행중인 유증상자는 %s명입니다." % (
-            data["confirmator_num"], data["check_num"])
-
-    elif '퇴원조치수' in received_message:
-        data = json.loads(summary_info.get_json())
-        msg = "현재시각 기준, %s명이 코로나19 확진 후 퇴원조치(격리해제) 되었습니다." % data["discharged_num"]
+            msg = CHATBOT_RESPONSE[key]
+            send_message_api(json.dumps({
+                "recipient": {"id": fbid}, "message": {"text": msg, "quick_replies": quick_replies}}))
 
     if not msg:
-        msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
+        if '확진환자수' in received_message:
+            data = json.loads(summary_info.get_json())
+            msg = "현재시각 기준, 코로나19 확진환자는 %s명, 검사가 진행중인 유증상자는 %s명입니다." % (
+                data["confirmator_num"], data["check_num"])
 
-    send_message_api(json.dumps({"recipient": {"id": fbid}, "message": {
-        "text": msg, "quick_replies": quick_replies}}))
+        elif '퇴원조치수' in received_message:
+            data = json.loads(summary_info.get_json())
+            msg = "현재시각 기준, %s명이 코로나19 확진 후 퇴원조치(격리해제) 되었습니다." % data["discharged_num"]
 
+        else:
+            msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
+            
+        send_message_api(json.dumps({"recipient": {"id": fbid}, "message": {"text": msg}}))
 
 def send_media_message(fbid, media_url, media_type):
     send_message_api(json.dumps({
@@ -84,6 +77,11 @@ def send_media_message(fbid, media_url, media_type):
         "message": {"attachment": {"type": media_type, "payload": {"url": media_url}}}
     }))
 
+def send_dots(fbid):
+    send_message_api(json.dumps({
+        "recipient": {"id": fbid},
+        "sender_action": "typing_on"
+    }))
 
 def send_message_api(response_msg):
     endpoint = 'https://graph.facebook.com/v6.0/me/messages?access_token=%s' % os.environ['PAGE_ACCESS_TOKEN']
