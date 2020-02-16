@@ -35,12 +35,20 @@ def lambda_handler(event, context):
     elif event["httpMethod"] == "POST":
         incoming_message = json.loads(event['body'])
         message = incoming_message['entry'][0]['messaging'][0]
-        send_facebook_message(
-            message['sender']['id'], message['message']['text'])
+        if(message['sender']['id'] and message['message']['text']) {
+            send_dots(message['sender']['id'])
+            send_text_message(
+                message['sender']['id'], message['message']['text'])
+        }
         return {'statusCode': '200', 'body': 'Success', 'headers': {'Content-Type': 'application/json'}}
 
+def send_dots(fbid):
+    send_message_api(json.dumps({
+        "recipient": {"id": fbid},
+        "sender_action": "typing_on"
+    }))
 
-def send_facebook_message(fbid, received_message):
+def send_text_message(fbid, received_message):
     msg = ''
     quick_replies = list()
 
@@ -60,7 +68,10 @@ def send_facebook_message(fbid, received_message):
 
     if not msg:
         msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
+    
+    send_message_api(json.dumps({"recipient": {"id": fbid}, "message": {
+        "text": msg, "quick_replies": quick_replies}}))
 
+def send_message_api(json):
     endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s' % os.environ['PAGE_ACCESS_TOKEN']
-    response_msg = json.dumps({"recipient": {"id": fbid}, "message": {"text": msg, "quick_replies": quick_replies}})
-    requests.post(endpoint, headers={"Content-Type": "application/json"}, data=response_msg)
+    requests.post(endpoint, headers={"Content-Type": "application/json"}, data=json)
