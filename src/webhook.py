@@ -6,8 +6,8 @@ from crawler import summary_info
 from crawler import hospital_info
 
 CHATBOT_RESPONSE = {
-    '확진환자수':'',
-    '퇴원조치수':'',
+    '확진환자수': '',
+    '퇴원조치수': '',
     '발단': """2019년 12월, 중국 우한에서 처음 발생했습니다. 감염원은 동물로 추정되고 있으며, 동물에게서 사람으로 전파된 것으로 추정됩니다.""",
     '증상': """감염되면 최대 2주간의 잠복기를 거친 후, 발열 / 기침 / 호흡곤란을 비롯한 폐렴 증상이 주로 나타납니다. 다만, 증상이 나타나지 않는 무증상 감염 사례도 존재합니다.""",
     '전염경로': """코로나19는 사람 간 전파가 확인된 바이러스입니다. 주된 감염경로는 비말감염으로, 감염자의 침방울이 호흡기나 눈/코/입의 점막으로 침투될 때 전염됩니다.""",
@@ -38,10 +38,12 @@ def lambda_handler(event, context):
             message = incoming_message['entry'][0]['messaging'][0]
             if(message['sender']['id'] and message['message']['text']):
                 send_dots(message['sender']['id'])
-                send_text_message(message['sender']['id'], message['message']['text'])
+                send_text_message(
+                    message['sender']['id'], message['message']['text'])
             return {'statusCode': '200', 'body': 'Success', 'headers': {'Content-Type': 'application/json'}}
         except:
             return {'statusCode': '500', 'body': 'Internal server error', 'headers': {'Content-Type': 'application/json'}}
+
 
 def send_dots(fbid):
     send_message_api(json.dumps({
@@ -49,12 +51,14 @@ def send_dots(fbid):
         "sender_action": "typing_on"
     }))
 
+
 def send_text_message(fbid, received_message):
     msg = ''
     quick_replies = list()
 
     for key in CHATBOT_RESPONSE.keys():
-        quick_replies.append({"content_type": "text", "title": key, "payload": "DEVELOPER_DEFINED_PAYLOAD"})
+        quick_replies.append(
+            {"content_type": "text", "title": key, "payload": "DEVELOPER_DEFINED_PAYLOAD"})
         if key in received_message:
             msg = CHATBOT_RESPONSE[key] + "\n"
 
@@ -69,10 +73,19 @@ def send_text_message(fbid, received_message):
 
     if not msg:
         msg = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
-    
+
     send_message_api(json.dumps({"recipient": {"id": fbid}, "message": {
         "text": msg, "quick_replies": quick_replies}}))
 
+
+def send_media_message(fbid, media_url, media_type):
+    send_message_api(json.dumps({
+        "recipient": {"id": fbid},
+        "message": {"attachment": {"type": media_type, "payload": {"url": media_url}}}
+    }))
+
+
 def send_message_api(response_msg):
     endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s' % os.environ['PAGE_ACCESS_TOKEN']
-    requests.post(endpoint, headers={"Content-Type": "application/json"}, data=response_msg)
+    requests.post(endpoint, headers={
+                  "Content-Type": "application/json"}, data=response_msg)
