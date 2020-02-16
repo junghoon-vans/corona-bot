@@ -7,7 +7,17 @@
   Corona Bot
 </h1>
 
-Corona Bot is a simple facebook messenger bot to update users about the virus spread progression periodically.
+<h3 align="center">
+  🦠⚙️🤖
+</h3>
+
+<h3 align="center">
+  Corona19 Facebook Serverless Messenger Bot
+</h3>
+
+<p align="center">
+  Corona Bot is a simple facebook messenger bot to update users about the virus spread progression periodically.
+</p>
 
 ## 🔍 Overview
 
