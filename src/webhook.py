@@ -60,7 +60,7 @@ def send_text_message(fbid, received_message):
         quick_replies.append(
             {"content_type": "text", "title": key, "payload": "DEVELOPER_DEFINED_PAYLOAD"})
         if key in received_message:
-            msg = CHATBOT_RESPONSE[key] + "\n"
+            msg += CHATBOT_RESPONSE[key] + "\n"
 
     if '확진환자수' in received_message:
         data = json.loads(summary_info.get_json())
