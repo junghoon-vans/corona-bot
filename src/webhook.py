@@ -36,11 +36,9 @@ def lambda_handler(event, context):
         try:
             incoming_message = json.loads(event['body'])
             message = incoming_message['entry'][0]['messaging'][0]
-            if(message['sender']['id'] and message['message']['text']) {
+            if(message['sender']['id'] and message['message']['text']):
                 send_dots(message['sender']['id'])
-                send_text_message(
-                    message['sender']['id'], message['message']['text'])
-            }
+                send_text_message(message['sender']['id'], message['message']['text'])
             return {'statusCode': '200', 'body': 'Success', 'headers': {'Content-Type': 'application/json'}}
         except:
             return {'statusCode': '500', 'body': 'Internal server error', 'headers': {'Content-Type': 'application/json'}}
@@ -75,6 +73,6 @@ def send_text_message(fbid, received_message):
     send_message_api(json.dumps({"recipient": {"id": fbid}, "message": {
         "text": msg, "quick_replies": quick_replies}}))
 
-def send_message_api(json):
+def send_message_api(response_msg):
     endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s' % os.environ['PAGE_ACCESS_TOKEN']
-    requests.post(endpoint, headers={"Content-Type": "application/json"}, data=json)
+    requests.post(endpoint, headers={"Content-Type": "application/json"}, data=response_msg)
