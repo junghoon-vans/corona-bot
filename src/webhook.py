@@ -33,14 +33,17 @@ def lambda_handler(event, context):
             return {'statusCode': '401', 'body': 'Incorrect verify token', 'headers': {'Content-Type': 'application/json'}}
 
     elif event["httpMethod"] == "POST":
-        incoming_message = json.loads(event['body'])
-        message = incoming_message['entry'][0]['messaging'][0]
-        if(message['sender']['id'] and message['message']['text']) {
-            send_dots(message['sender']['id'])
-            send_text_message(
-                message['sender']['id'], message['message']['text'])
-        }
-        return {'statusCode': '200', 'body': 'Success', 'headers': {'Content-Type': 'application/json'}}
+        try:
+            incoming_message = json.loads(event['body'])
+            message = incoming_message['entry'][0]['messaging'][0]
+            if(message['sender']['id'] and message['message']['text']) {
+                send_dots(message['sender']['id'])
+                send_text_message(
+                    message['sender']['id'], message['message']['text'])
+            }
+            return {'statusCode': '200', 'body': 'Success', 'headers': {'Content-Type': 'application/json'}}
+        except:
+            return {'statusCode': '500', 'body': 'Internal server error', 'headers': {'Content-Type': 'application/json'}}
 
 def send_dots(fbid):
     send_message_api(json.dumps({
