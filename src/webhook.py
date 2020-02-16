@@ -86,6 +86,6 @@ def send_media_message(fbid, media_url, media_type):
 
 
 def send_message_api(response_msg):
-    endpoint = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s' % os.environ['PAGE_ACCESS_TOKEN']
+    endpoint = 'https://graph.facebook.com/v6.0/me/messages?access_token=%s' % os.environ['PAGE_ACCESS_TOKEN']
     requests.post(endpoint, headers={
                   "Content-Type": "application/json"}, data=response_msg)
