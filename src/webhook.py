@@ -45,7 +45,7 @@ def lambda_handler(event, context):
             return {'statusCode': '500', 'body': 'Internal server error', 'headers': {'Content-Type': 'application/json'}}
 
 def send_text_message(fbid, received_message):
-    replies = list()
+    reply = ''
     quick_replies = list()
 
     # add crawler data in dict
@@ -57,19 +57,17 @@ def send_text_message(fbid, received_message):
         data = json.loads(summary_info.get_json())
         CHATBOT_RESPONSE['퇴원조치수'] = "현재시각 기준, %s명이 코로나19 확진 후 퇴원조치(격리해제) 되었습니다." % data["discharged_num"]
 
-    # add replies in list
     for key in CHATBOT_RESPONSE.keys():
         quick_replies.append(
             {"content_type": "text", "title": key, "payload": "DEVELOPER_DEFINED_PAYLOAD"})
         if key in received_message:
-            replies.append(CHATBOT_RESPONSE[key])
+            reply += CHATBOT_RESPONSE[key] + '\n\n'
 
-    if not replies:
-        replies.append("안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요.")
+    if not reply:
+        reply = "안녕하세요,\n코로나 알리미입니다!\n\n아래 제시된 키워드를 포함하여 질문해주세요."
 
-    for reply in replies:
-        send_message_api(json.dumps({
-            "recipient": {"id": fbid}, "message": {"text": reply, "quick_replies": quick_replies}}))
+    send_message_api(json.dumps({
+        "recipient": {"id": fbid}, "message": {"text": reply, "quick_replies": quick_replies}}))
 
 def send_media_message(fbid, media_url, media_type):
     send_message_api(json.dumps({
