@@ -50,12 +50,9 @@ def send_text_message(fbid, received_message):
 
     # add crawler data in dict
     if '확진환자수' in received_message:
-        data = json.loads(summary_info.get_json())
-        CHATBOT_RESPONSE['확진환자수'] = "현재시각 기준, 코로나19 확진환자는 %s명, 검사가 진행중인 유증상자는 %s명입니다." % (
-            data["confirmator_num"], data["check_num"])
+        CHATBOT_RESPONSE['확진환자수'] = summary_info.get_confirmator_num
     if '퇴원조치수' in received_message:
-        data = json.loads(summary_info.get_json())
-        CHATBOT_RESPONSE['퇴원조치수'] = "현재시각 기준, %s명이 코로나19 확진 후 퇴원조치(격리해제) 되었습니다." % data["discharged_num"]
+        CHATBOT_RESPONSE['퇴원조치수'] = summary_info.get_discharged_num
 
     for key in CHATBOT_RESPONSE.keys():
         quick_replies.append(
