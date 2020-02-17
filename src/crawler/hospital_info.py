@@ -6,9 +6,7 @@ import json
 
 hosiptal = {}
 # 전체 선별진료소
-hosiptal_list = []
-# 시군구 리스트
-region_list = []
+hospital_dic = {}
 
 # retry get raw without timeout exception
 def get_raw(url):
@@ -16,7 +14,7 @@ def get_raw(url):
         try:
             return requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
         except:
-            pass
+            print("internet not connected")
 
 # 검체채취가능 진료소
 possible_hospital=[]
@@ -28,6 +26,8 @@ html_hospital = BeautifulSoup(raw_hospital.content, 'html.parser', from_encoding
 hospitals = html_hospital.select("tbody.tb_center tr")
 
 # 546
+city_dic = {}
+item_list = []
 for h in hospitals:
     id = h.select_one("th").text
     city = h.select_one("td:nth-of-type(1)").text
@@ -35,23 +35,34 @@ for h in hospitals:
     selected = h.select_one("td:nth-of-type(3)").text.replace("	","").replace("(검체채취 가능)", "")
     number = h.select_one("td:nth-of-type(4)").text.replace(",","/")
 
-    region_list.append(region)
-    region_list = list(set(region_list))
-
+    # city_dic = {}
+    # item_list = []
     if "*" in selected:
         possible_hospital.append(selected)
 
-    print(id,city,region,selected,number)
-    hosiptal_list.append({"city":city, "region":region, "name":selected,"number":number})
+    if city in hospital_dic.keys():
+        if region in city_dic.keys():
+            print(region, "안에 더 추가")
+            item_list.append([selected, number])
+            city_dic[region] = item_list
+        else:
+            print(region, "새롭게 추가")
+            item_list = list()
+            item_list.append([selected, number])
+            city_dic[region] = item_list
+    else:
+        print(city, "시 추가")
+        item_list = list()
+        city_dic = dict()
+        item_list.append([selected, number])
+        city_dic[region] = item_list
+        hospital_dic[city] = city_dic
 
-hospital = {"all_hospital":hosiptal_list, "sampling_hospital":possible_hospital}
-json_hospital = json.dumps(hospital, indent=4)
-# print(json_hospital)
-# print(type(json_hospital))
-# print(possible_hospital)
 
-print(region_list)
-print(len(region_list))
+print(hospital_dic)
+
+json_hospital = json.dumps(hospital_dic, indent=4)
+print(json_hospital)
 
 with open('hospital.json', 'w', encoding="utf-8") as make_hosptial:
-    json.dump(hospital, make_hosptial, ensure_ascii=False, indent="\t")
+    json.dump(hospital_dic, make_hosptial, ensure_ascii=False, indent="\t")
