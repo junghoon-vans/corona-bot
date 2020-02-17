@@ -3,11 +3,11 @@ import os
 import requests
 
 from crawler import summary_info
-from crawler import hospital_info
 
 CHATBOT_RESPONSE = {
     '확진환자수': '',
     '퇴원조치수': '',
+    '선별진료소': '',
     '발단': """2019년 12월, 중국 우한에서 처음 발생했습니다. 감염원은 동물로 추정되고 있으며, 동물에게서 사람으로 전파된 것으로 추정됩니다.""",
     '증상': """감염되면 최대 2주간의 잠복기를 거친 후, 발열/기침/호흡곤란을 비롯한 폐렴 증상이 주로 나타납니다. 다만, 증상이 나타나지 않는 무증상 감염 사례도 존재합니다.""",
     '전염경로': """코로나19는 사람 간 전파가 확인된 바이러스입니다. 주된 감염경로는 비말감염으로, 감염자의 침방울이 호흡기나 눈/코/입의 점막으로 침투될 때 전염됩니다.""",
@@ -17,7 +17,6 @@ CHATBOT_RESPONSE = {
     \n4. 아플 때는 자가격리를 통해 다른 사람과의 접촉을 피합니다.""",
     '치료': """코로나19 치료는 환자의 증상에 대응하는 치료로 이루어집니다.\n기침/인후통/폐렴 등 주요 증상에 따라 항바이러스제나 항생제 투여가 해당됩니다.""",
 }
-
 
 def lambda_handler(event, context):
     # TODO implement
@@ -66,16 +65,9 @@ def send_text_message(fbid, received_message):
     send_message_api(json.dumps({
         "recipient": {"id": fbid}, "message": {"text": reply, "quick_replies": quick_replies}}))
 
-def send_media_message(fbid, media_url, media_type):
-    send_message_api(json.dumps({
-        "recipient": {"id": fbid},
-        "message": {"attachment": {"type": media_type, "payload": {"url": media_url}}}
-    }))
-
 def send_dots(fbid):
     send_message_api(json.dumps({
-        "recipient": {"id": fbid},
-        "sender_action": "typing_on"
+        "recipient": {"id": fbid}, "sender_action": "typing_on"
     }))
 
 def send_message_api(response_msg):
