@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import requests
 
 from crawler import summary_info
@@ -65,14 +66,14 @@ def send_text(fbid, received_message):
 
     # parse hospital_list
     for city in cities:
-        if city in received_message:
+        if re.compile(city).search(received_message):
             with open('data/hospital.json') as json_file:
                 json_data = json.load(json_file)
             
             for region in json_data[city].keys():
                 for hospital in json_data[city][region]:
                     reply += hospital[0] + " " + hospital[1] + '\n'
-                if region in received_message:
+                if re.compile(region[:-1]).search(received_message):
                     reply = ''
                     for hospital in json_data[city][region]:
                         reply += hospital[0] + " " + hospital[1] + '\n'
