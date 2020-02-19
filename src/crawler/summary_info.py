@@ -9,7 +9,7 @@ def get_confirmator_num():
     statusbox = init()
     confirmator_num = statusbox[0].text[:-2]
     check_num = statusbox[2].text[:-2]
-    return "현재시각 기준, 코로나19 확진환자는 %s명, 검사가 진행중인 유증상자는 %s명입니다." % ( confirmator_num, check_num)
+    return "현재시각 기준, 코로나19 검사를 진행한 인원은 %s명이며 확진환자는 %s명입니다." % (check_num, confirmator_num)
 
 def get_discharged_num():
     statusbox = init()
