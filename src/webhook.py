@@ -52,9 +52,9 @@ def send_text(fbid, received_message):
 
     # add crawler data in dict
     if '확진환자수' in received_message:
-        CHATBOT_RESPONSE['확진환자수'] = summary_info.get_confirmator_num()
+        reply += summary_info.get_confirmator_num()
     if '퇴원조치수' in received_message:
-        CHATBOT_RESPONSE['퇴원조치수'] = summary_info.get_discharged_num()
+        reply += summary_info.get_discharged_num()
 
     for key in CHATBOT_RESPONSE.keys():
         quick_replies.append({

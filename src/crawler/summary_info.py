@@ -7,13 +7,13 @@ import json
 
 def get_confirmator_num():
     statusbox = init()
-    confirmator_num = int(statusbox[0].text[:-2])
-    check_num = int(statusbox[2].text[:-2])
+    confirmator_num = statusbox[0].text[:-2]
+    check_num = statusbox[2].text[:-2]
     return "현재시각 기준, 코로나19 확진환자는 %s명, 검사가 진행중인 유증상자는 %s명입니다." % ( confirmator_num, check_num)
 
 def get_discharged_num():
     statusbox = init()
-    discharged_num = int(statusbox[1].text[:-2])
+    discharged_num = statusbox[1].text[:-2]
     return "현재시각 기준, %s명이 코로나19 확진 후 퇴원조치(격리해제) 되었습니다." % discharged_num
 
 def init():
