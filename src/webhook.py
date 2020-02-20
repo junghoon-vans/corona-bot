@@ -8,6 +8,7 @@ from crawler import summary_info
 CHATBOT_RESPONSE = {
     '확진환자수': '',
     '퇴원조치수': '',
+    '사망자수': '',
     '선별진료소': """시도 및 시군구를 입력하면 선별진료소 조회를 시작합니다.\n(검색어 예시: '서울' 또는 '제주 서귀포')""",
     '발단': """2019년 12월, 중국 우한에서 처음 발생했습니다. 감염원은 동물로 추정되고 있으며, 동물에게서 사람으로 전파된 것으로 추정됩니다.""",
     '증상': """감염되면 최대 2주간의 잠복기를 거친 후, 발열/기침/호흡곤란을 비롯한 폐렴 증상이 주로 나타납니다. 다만, 증상이 나타나지 않는 무증상 감염 사례도 존재합니다.""",
@@ -52,9 +53,11 @@ def send_text(fbid, received_message):
 
     # add crawler data in dict
     if '확진환자수' in received_message:
-        reply += summary_info.get_confirmator_num()
+        CHATBOT_RESPONSE['확진환자수'] = summary_info.get_confirmator_num()
     if '퇴원조치수' in received_message:
-        reply += summary_info.get_discharged_num()
+        CHATBOT_RESPONSE['퇴원조치수'] = summary_info.get_discharged_num()
+    if '사망자수' in received_message:
+        CHATBOT_RESPONSE['사망자수'] = summary_info.get_death_num()
 
     for key in CHATBOT_RESPONSE.keys():
         quick_replies.append({
