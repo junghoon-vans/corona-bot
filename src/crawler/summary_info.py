@@ -9,7 +9,7 @@ def get_confirmator_num():
     statusbox, update_date = init()
     confirmator_num = statusbox[0].text[:-1].replace("(확진환자) ", "")
     check_num = statusbox[3].text[:-1].replace("(검사진행) ", "")
-    return "검사를 진행한 인원은 %s명이며 확진환자는 %s명입니다.\n" % (check_num, confirmator_num) + update_date.replace(".", "월 ")
+    return "검사를 진행중인 인원은 %s명이며 확진환자는 %s명입니다.\n" % (check_num, confirmator_num) + update_date.replace(".", "월 ")
 
 def get_discharged_num():
     statusbox, update_date = init()
