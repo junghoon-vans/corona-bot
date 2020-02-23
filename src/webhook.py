@@ -3,7 +3,7 @@ import os
 import re
 import requests
 
-from crawler import summary_info
+from parser import summary_info
 from parser import hospital_info
 
 CHATBOT_RESPONSE = {
