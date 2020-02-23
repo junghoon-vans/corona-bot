@@ -4,6 +4,7 @@ import re
 import requests
 
 from crawler import summary_info
+from parser import hospital_info
 
 CHATBOT_RESPONSE = {
     '확진환자수': '',
@@ -70,18 +71,7 @@ def send_text(fbid, received_message):
     # parse hospital_list
     for city in cities:
         if re.compile(city).search(received_message):
-            with open('data/hospital.json') as json_file:
-                json_data = json.load(json_file)
-            
-            for region in json_data[city].keys():
-                for hospital in json_data[city][region]:
-                    reply += hospital[0] + " " + hospital[1] + '\n'
-                if re.compile(region[:-1]).search(received_message):
-                    reply = ''
-                    for hospital in json_data[city][region]:
-                        reply += hospital[0] + " " + hospital[1] + '\n'
-                    break
-            reply += "\n('*'는 검체채취 가능 진료소)"
+            reply += hospital_info.get_hospital_list(city, received_message)
             break
 
     if not reply:
