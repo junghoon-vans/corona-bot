@@ -3,13 +3,14 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import boto3
+import os
 
 # TODO 지역별 확진자
 
 def set_summary_info(event, context):
     data = dict()
 
-    raw_status = get_raw("http://ncov.mohw.go.kr/bdBoardList.do")
+    raw_status = get_raw(os.environ['summary_url'])
     html_status = BeautifulSoup(raw_status.text, 'html.parser')
     statusbox = html_status.select("ul.s_listin_dot li")
     updatebox = html_status.select_one("p.s_descript").text
