@@ -40,12 +40,11 @@ def lambda_handler(event, context):
         for entry in incoming_message['entry']:
             for message in entry['messaging']:
                 if 'message' in message:
+                    send_dots(message['sender']['id'])
                     try:
-                        send_dots(message['sender']['id'])
                         send_text(
                             message['sender']['id'], message['message']['text'])
                     except:
-                        send_dots(message['sender']['id'])
                         send_text(
                             message['sender']['id'], '.')
         return {'statusCode': '200', 'body': 'Success' , 'headers': {'Content-Type': 'application/json'}}
