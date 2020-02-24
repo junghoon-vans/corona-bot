@@ -30,23 +30,25 @@ def lambda_handler(event, context):
         hub_challenge = event["queryStringParameters"]["hub.challenge"]
         hub_verify_token = event["queryStringParameters"]["hub.verify_token"]
 
-        # store VERIFY_TOKEN in aws_lambda
         if hub_verify_token == os.environ['VERIFY_TOKEN']:
             return {'statusCode': '200', 'body': hub_challenge, 'headers': {'Content-Type': 'application/json'}}
         else:
             return {'statusCode': '401', 'body': 'Incorrect verify token', 'headers': {'Content-Type': 'application/json'}}
 
     elif event["httpMethod"] == "POST":
-        try:
-            incoming_message = json.loads(event['body'])
-            message = incoming_message['entry'][0]['messaging'][0]
-            if(message['sender']['id'] and message['message']['text']):
-                send_dots(message['sender']['id'])
-                send_text(
-                    message['sender']['id'], message['message']['text'])
-            return {'statusCode': '200', 'body': 'Success', 'headers': {'Content-Type': 'application/json'}}
-        except:
-            return {'statusCode': '500', 'body': 'Internal server error', 'headers': {'Content-Type': 'application/json'}}
+        incoming_message = json.loads(event['body'])
+        for entry in incoming_message['entry']:
+            for message in entry['messaging']:
+                if 'message' in message:
+                    try:
+                        send_dots(message['sender']['id'])
+                        send_text(
+                            message['sender']['id'], message['message']['text'])
+                    except:
+                        send_dots(message['sender']['id'])
+                        send_text(
+                            message['sender']['id'], '.')
+        return {'statusCode': '200', 'body': 'Success' , 'headers': {'Content-Type': 'application/json'}}
 
 def send_text(fbid, received_message):
     reply = ''
