@@ -25,8 +25,15 @@
 
 ## 🔍 Overview
 
-<img alt="architecture" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/architecture.png">
+### Chatbot
+<p align="center">
+  <img alt="architecture" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/architecture.png">
+</p>
 
+### Crawler
+<p align="center">
+  <img alt="architecture2" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/architecture2.png" width="75%">
+</p>
 
 ## 🧐 What's inside?
 
