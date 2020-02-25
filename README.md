@@ -19,6 +19,10 @@
   Corona Bot is a simple facebook messenger bot to update users about the virus spread progression periodically.
 </p>
 
+<p align="center">
+  <img alt="mockup" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/mockup.png">
+</p>
+
 ## 🔍 Overview
 
 <img alt="architecture" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/architecture.png">
