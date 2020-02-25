@@ -9,7 +9,7 @@ def get_confirmator_num():
 
 def get_discharged_num():
     data = requests.get(os.environ['S3_BUCKET_URL']+"summary.json").json()
-    return "%s명이 퇴원조치(격리해제) 되었습니다. 총 완치자 비율은 %s%%입니다.\n" % (data['discharged_num'], data['cured_rate']) + data['update_date'].replace(".", "월 ")
+    return "%s명이 퇴원조치 되었습니다.\n총 완치자 비율은 %s%%입니다.\n" % (data['discharged_num'], data['cured_rate']) + data['update_date'].replace(".", "월 ")
 
 def get_death_num():
     data = requests.get(os.environ['S3_BUCKET_URL']+"summary.json").json()
