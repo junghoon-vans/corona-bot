@@ -20,7 +20,7 @@ def set_summary_info(event, context):
     data['discharged_num'] = statusbox[1].text[:-1].replace("(확진환자 격리해제) ", "")
     data['death_num'] = statusbox[2].text[:-1].replace("(사망자) ", "")
     data['check_num'] = statusbox[3].text[:-1].replace("(검사진행) ", "")
-    data['cured_rate'] = round(int(data['discharged_num'])/int(data['confirmator_num'])*100, 1)
+    data['cured_rate'] = round(int(data['discharged_num'].replace(",", ""))/int(data['confirmator_num'].replace(",", ""))*100, 1)
     
     json_data = json.dumps(data)
     
@@ -29,7 +29,8 @@ def set_summary_info(event, context):
     bucket.put_object(Key='summary.json', Body=json_data)
     
     return {
-        'statusCode': 200
+        'statusCode': 200,
+        'body': json_data
     }
 
 # retry get raw without timeout exception
