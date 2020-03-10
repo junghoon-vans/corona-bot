@@ -12,14 +12,17 @@ def set_summary_info(event, context):
 
     raw_status = get_raw(os.environ['summary_url'])
     html_status = BeautifulSoup(raw_status.text, 'html.parser')
-    statusbox = html_status.select("td.w_bold")
-    updatebox = html_status.select_one("p.s_descript").text
+    statusbox = html_status.select("span.num")
+    checkbox = html_status.select_one("span.num_rnum").text
+    updatebox = html_status.select_one("span.livedate").text[1:13].split(".")
     
-    data['update_date'] = updatebox[23:-1]
-    data['confirmator_num'] = statusbox[0].text[:-2]
-    data['discharged_num'] = statusbox[1].text[:-2]
-    data['death_num'] = statusbox[2].text[:-2]
-    data['check_num'] = statusbox[3].text[:-2]
+    
+    data['update_date'] = updatebox[0] + "월 " + updatebox[1] + "일" + updatebox[2]
+    data['confirmator_num'] = statusbox[0].text.replace("(누적)", "")
+    data['discharged_num'] = statusbox[1].text
+    data['charged_num'] = statusbox[2].text
+    data['death_num'] = statusbox[3].text
+    data['check_num'] = checkbox.split()[0]
     data['cured_rate'] = round(int(data['discharged_num'].replace(",", ""))/int(data['confirmator_num'].replace(",", ""))*100, 1)
     
     json_data = json.dumps(data)
