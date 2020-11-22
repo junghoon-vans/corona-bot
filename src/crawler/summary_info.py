@@ -14,10 +14,9 @@ def set_summary_info(event, context):
     html_status = BeautifulSoup(raw_status.text, 'html.parser')
     statusbox = html_status.select("span.num")
     checkbox = html_status.select_one("span.num_rnum").text
-    updatebox = html_status.select_one("span.livedate").text[1:13].split(".")
+    updatebox = html_status.select_one("span.livedate").text[1:].split(".")
     
-    
-    data['update_date'] = updatebox[0] + "월 " + updatebox[1] + "일" + updatebox[2]
+    data['update_date'] = updatebox[0] + "월 " + updatebox[1] + "일" + updatebox[2].split(",")[0]
     data['confirmator_num'] = statusbox[0].text.replace("(누적)", "")
     data['discharged_num'] = statusbox[1].text
     data['charged_num'] = statusbox[2].text
