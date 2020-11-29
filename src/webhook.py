@@ -7,6 +7,7 @@ from parser import summary_info
 from parser import hospital_info
 
 CHATBOT_RESPONSE = {
+    '일일확진자': '',
     '확진환자수': '',
     '퇴원조치수': '',
     '사망자수': '',
@@ -54,6 +55,8 @@ def send_text(fbid, received_message):
     quick_replies = list()
 
     # add crawler data in dict
+    if '일일확진자' in received_message:
+        CHATBOT_RESPONSE['일일확진자'] = summary_info.get_daily_num()
     if '확진환자수' in received_message:
         CHATBOT_RESPONSE['확진환자수'] = summary_info.get_confirmator_num()
     if '퇴원조치수' in received_message:
