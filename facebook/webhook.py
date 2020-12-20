@@ -24,7 +24,7 @@ CHATBOT_RESPONSE = {
 
 cities = ('서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종', '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주')
 
-def lambda_handler(event, context):
+def event_handler(event, context):
     # TODO implement
 
     if event["httpMethod"] == "GET":

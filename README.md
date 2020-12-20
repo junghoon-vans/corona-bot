@@ -40,7 +40,8 @@
 A quick look at the top-level files and directories you'll see in a Corona Bot project.
 
     .
-    ├── src
+    ├── crawler
+    ├── facebook
     ├── .gitignore
     ├── LICENSE
     └── README.md
