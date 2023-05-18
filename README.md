@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://www.facebook.com/코로나-알리미-109742117267368/">
-    <img alt="corona bot" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/corona.png" width="60" />
+    <img alt="corona bot" src="https://github.com/junghoon-vans/corona-bot/assets/44942700/704cb010-7a3a-47f5-8c0e-35452495be60" width="60" />
   </a>
 </p>
 <h1 align="center">
@@ -20,19 +20,7 @@
 </p>
 
 <p align="center">
-  <img alt="mockup" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/mockup.png">
-</p>
-
-## 🔍 Overview
-
-### Chatbot
-<p align="center">
-  <img alt="architecture" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/architecture.png">
-</p>
-
-### Crawler
-<p align="center">
-  <img alt="architecture2" src="https://corona-bot-bucket.s3.ap-northeast-2.amazonaws.com/assets/images/architecture2.png" width="75%">
+  <img alt="mockup" src="https://repository-images.githubusercontent.com/239509122/adb87980-581f-11ea-94b3-a3bc9d198dcb">
 </p>
 
 ## 🧐 What's inside?
